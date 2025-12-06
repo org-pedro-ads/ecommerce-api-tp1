@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "produtos")
@@ -24,4 +25,6 @@ public class Produto {
     private BigDecimal preco;
     private Integer quantidadeEstoque;
     private CategoriaProduto categoria;
+    @ElementCollection
+    private List<String> caracteristicas;
 }

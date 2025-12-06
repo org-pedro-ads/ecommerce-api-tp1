@@ -20,7 +20,8 @@ public class ProdutoService {
         produto.setPreco(dto.getPreco());
         produto.setQuantidadeEstoque(dto.getQuantidadeEstoque());
         produto.setCategoria(dto.getCategoria());
-        
+        produto.setCaracteristicas(dto.getCaracteristicas());
+
         return produtoRepository.save(produto);
     }
     
@@ -46,6 +47,7 @@ public class ProdutoService {
         produto.setPreco(dto.getPreco());
         produto.setQuantidadeEstoque(dto.getQuantidadeEstoque());
         produto.setCategoria(dto.getCategoria());
+        produto.setCaracteristicas(dto.getCaracteristicas());
 
         return produtoRepository.save(produto);
     }
