@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoController {
@@ -31,5 +32,17 @@ public class ProdutoController {
     @GetMapping
     public ResponseEntity<List<Produto>> listarTodos() {
         return ResponseEntity.ok(produtoService.listarTodos());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Produto> editar(@PathVariable Long id, @RequestBody ProdutoDTO dto) {
+        Produto atualizado = produtoService.atualizar(id, dto);
+        return ResponseEntity.ok(atualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        produtoService.remover(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -38,4 +38,20 @@ public class ProdutoService {
         produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - quantidade);
         produtoRepository.save(produto);
     }
+
+    public Produto atualizar(Long id, ProdutoDTO dto) {
+        Produto produto = buscarPorId(id);
+        produto.setNome(dto.getNome());
+        produto.setDescricao(dto.getDescricao());
+        produto.setPreco(dto.getPreco());
+        produto.setQuantidadeEstoque(dto.getQuantidadeEstoque());
+        produto.setCategoria(dto.getCategoria());
+
+        return produtoRepository.save(produto);
+    }
+
+    public void remover(Long id) {
+        Produto produto = buscarPorId(id);
+        produtoRepository.delete(produto);
+    }
 }
