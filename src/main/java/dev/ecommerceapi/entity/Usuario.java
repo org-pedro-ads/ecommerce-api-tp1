@@ -1,5 +1,6 @@
 package dev.ecommerceapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class Usuario {
     private Boolean admin;
 
     @OneToMany(mappedBy = "usuario")
+    @JsonIgnore
     private List<Pedido> pedidos;
 
 }
