@@ -1,5 +1,6 @@
 package dev.ecommerceapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,8 +27,9 @@ public class Pedido {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<ItemPedido> itens;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ItemPedido> itens = new ArrayList<>();
 
     private LocalDateTime dataPedido;
     private BigDecimal valorTotal;

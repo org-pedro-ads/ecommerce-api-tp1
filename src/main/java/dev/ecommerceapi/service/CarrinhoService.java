@@ -5,11 +5,14 @@ import dev.ecommerceapi.entity.*;
 import dev.ecommerceapi.entity.StatusPedido;
 import dev.ecommerceapi.repository.ItemPedidoRepository;
 import dev.ecommerceapi.repository.PedidoRepository;
+import dev.ecommerceapi.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CarrinhoService {
@@ -21,6 +24,9 @@ public class CarrinhoService {
     
     @Autowired
     private ProdutoService produtoService;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
     
     public Pedido obterCarrinho(Long usuarioId) {
         return pedidoRepository.findByUsuarioIdAndStatus(usuarioId, StatusPedido.PENDENTE)
@@ -29,6 +35,9 @@ public class CarrinhoService {
     }
     
     private Pedido criarNovoCarrinho(Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + usuarioId));
+
         Pedido pedido = new Pedido();
         pedido.setUsuario(new Usuario());
         pedido.getUsuario().setId(usuarioId);
@@ -52,8 +61,11 @@ public class CarrinhoService {
         item.setQuantidade(dto.getQuantidade());
         item.setPreco(produto.getPreco());
         item.setSubTotal(produto.getPreco().multiply(new BigDecimal(dto.getQuantidade())));
-        
+
+        List<ItemPedido> listItemPedido = carrinho.getItens();
+        listItemPedido.add(item);
         itemPedidoRepository.save(item);
+        carrinho.setItens(listItemPedido);
         recalcularTotal(carrinho);
         
         return carrinho;
