@@ -63,7 +63,7 @@ public class CarrinhoService {
         
         if (itemExistente != null) {
             // Atualiza a quantidade do item existente
-            int novaQuantidade = itemExistente.getQuantidade() + dto.getQuantidade();
+            int novaQuantidade = dto.getQuantidade();
             itemExistente.setQuantidade(novaQuantidade);
             itemExistente.setSubTotal(produto.getPreco().multiply(new BigDecimal(novaQuantidade)));
             itemPedidoRepository.save(itemExistente);
