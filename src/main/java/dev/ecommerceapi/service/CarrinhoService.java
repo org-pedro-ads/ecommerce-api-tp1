@@ -55,17 +55,32 @@ public class CarrinhoService {
             throw new RuntimeException("Estoque insuficiente");
         }
         
-        ItemPedido item = new ItemPedido();
-        item.setPedido(carrinho);
-        item.setProduto(produto);
-        item.setQuantidade(dto.getQuantidade());
-        item.setPreco(produto.getPreco());
-        item.setSubTotal(produto.getPreco().multiply(new BigDecimal(dto.getQuantidade())));
-
-        List<ItemPedido> listItemPedido = carrinho.getItens();
-        listItemPedido.add(item);
-        itemPedidoRepository.save(item);
-        carrinho.setItens(listItemPedido);
+        // Verifica se o produto já está no carrinho
+        ItemPedido itemExistente = carrinho.getItens().stream()
+            .filter(item -> item.getProduto().getId().equals(produto.getId()))
+            .findFirst()
+            .orElse(null);
+        
+        if (itemExistente != null) {
+            // Atualiza a quantidade do item existente
+            int novaQuantidade = itemExistente.getQuantidade() + dto.getQuantidade();
+            itemExistente.setQuantidade(novaQuantidade);
+            itemExistente.setSubTotal(produto.getPreco().multiply(new BigDecimal(novaQuantidade)));
+            itemPedidoRepository.save(itemExistente);
+        } else {
+            // Cria um novo item
+            ItemPedido novoItem = new ItemPedido();
+            novoItem.setPedido(carrinho);
+            novoItem.setProduto(produto);
+            novoItem.setQuantidade(dto.getQuantidade());
+            novoItem.setPreco(produto.getPreco());
+            novoItem.setSubTotal(produto.getPreco().multiply(new BigDecimal(dto.getQuantidade())));
+            
+            carrinho.getItens().add(novoItem);
+            itemPedidoRepository.save(novoItem);
+        }
+        
+        // Recalcula o total do carrinho
         recalcularTotal(carrinho);
         
         return carrinho;
